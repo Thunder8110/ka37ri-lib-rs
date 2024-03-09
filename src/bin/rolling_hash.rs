@@ -12,11 +12,9 @@ mod tests {
     let rh_base = RHBase::new(b, (1 << 61) - 1, |c: char| c as u64);
     let rh_base = Box::new(rh_base);
     let mut rh = RollingHash::new_with(rh_base, &s.chars().collect::<Vec<_>>());
-    // println!("{} {} {} {} {}", rh.get(0..1), rh.get(0..2), rh.get(0..3), rh.get(0..4), rh.get(0..5));
-    // println!("{} {} {}", rh.get(7..8), rh.get(7..9), rh.get(7..10));
     assert_eq!(rh.get(0..4), rh.get(7..11));
     assert_ne!(rh.get(0..4), rh.get(1..5));
-    println!("{:?}", rh);
+    assert_ne!(rh.get(0..7), rh.get(0..6));
   }
 }
 
