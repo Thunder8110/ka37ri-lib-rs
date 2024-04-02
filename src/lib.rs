@@ -158,6 +158,16 @@ fn ext_euc_pos(a: i64, b: i64) -> (i64, i64, i64) {
   }
 }
 
+#[snippet("acc")]
+fn accumulate<T>(iter: impl Iterator<Item = T>, init: T, unit: T, func: fn(T, T) -> T) -> impl Iterator<Item = T>
+  where T: Clone
+{
+  std::iter::once(unit).chain(iter).scan(init, move |acc, x| {
+    *acc = func(acc.clone(), x);
+    Some(acc.clone())
+  })
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -205,5 +215,17 @@ mod tests {
     let res1: Vec<String> = input().split_whitespace().into_iter().map(|s| s.to_string()).collect();
     println!("{}", res0);
     println!("{:?}", res1);
+  }
+  #[test]
+  fn acc_test() {
+    let res0: Vec<i64> = accumulate(0..10, 0, 0, |a, b| a + b).collect();
+    let exp0 = vec![0, 0, 1, 3, 6, 10, 15, 21, 28, 36, 45];
+    assert_eq!(res0, exp0);
+    let res1: Vec<i64> = accumulate([2i64, 3, 5, 7].iter().copied(), 1, 0, |a, b| a + b).collect();
+    let exp1 = vec![1, 3, 6, 11, 18];
+    assert_eq!(res1, exp1);
+    let res2: Vec<i64> = accumulate([2i64, 3, 5, 7].iter().copied(), 1, 1, |a, b| a * b).collect();
+    let exp2 = vec![1, 2, 6, 30, 210];
+    assert_eq!(res2, exp2);
   }
 }
