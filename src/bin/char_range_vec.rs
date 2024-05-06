@@ -1,3 +1,5 @@
+use cargo_snippet::snippet;
+
 fn main() {
   unimplemented!();
 }
@@ -22,6 +24,7 @@ mod tests {
   }
 }
 
+#[snippet("crv")]
 pub mod char_range_vec {
   use std::ops::{Index, IndexMut, RangeInclusive};
 

@@ -1,8 +1,11 @@
+use cargo_snippet::snippet;
+
 fn main() {
   unimplemented!();
 }
 
 // modified dsu in ac-library-rs
+#[snippet("wuf")]
 pub mod weightedunionfind {
   pub struct WeightedUnionFind {
     n: usize,

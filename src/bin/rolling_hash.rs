@@ -1,3 +1,5 @@
+use cargo_snippet::snippet;
+
 fn main() {
   unimplemented!();
 }
@@ -18,6 +20,7 @@ mod tests {
   }
 }
 
+#[snippet("rh")]
 pub mod rolling_hash {
   use std::ops::Range;
 

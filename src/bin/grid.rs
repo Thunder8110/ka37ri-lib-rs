@@ -1,3 +1,5 @@
+use cargo_snippet::snippet;
+
 fn main() {
   unimplemented!();
 }
@@ -14,6 +16,7 @@ mod tests {
   }
 }
 
+#[snippet("grid")]
 pub mod grid {
   const FOUR_NEIGHBOUR: [(isize, isize); 4] = [(1, 0), (-1, 0), (0, 1), (0, -1)];
   const EIGHT_NEIGHBOUR: [(isize, isize); 8] = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)];
