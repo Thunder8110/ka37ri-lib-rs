@@ -6,11 +6,11 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-  use super::grid;
+use super::grid;
   #[test]
   fn test() {
     let g = [".#..#.", ".#.###", ".###.#", "......", "#.###."];
-    let g: Vec<Vec<char>> = g.iter().map(|&line| line.chars().collect()).collect();
+    let g: Vec<Vec<char>> = g.iter().map(|line| line.chars().collect()).collect();
     let grid = grid::Grid::new(g);
     let x = grid.get(0, 2);
   }
@@ -20,6 +20,8 @@ mod tests {
 pub mod grid {
   const FOUR_NEIGHBOUR: [(isize, isize); 4] = [(1, 0), (-1, 0), (0, 1), (0, -1)];
   const EIGHT_NEIGHBOUR: [(isize, isize); 8] = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)];
+
+  #[derive(Debug, PartialEq, Eq, Clone)]
   pub struct Grid<T> {
     h: usize,
     w: usize,
@@ -38,6 +40,10 @@ pub mod grid {
       Vec<T>: Clone,
     {
       let grid = vec![vec![init.clone(); w]; h];
+      Grid { h, w, grid }
+    }
+    pub fn empty_by(h: usize, w: usize, init: fn(usize, usize) -> T) -> Self {
+      let grid = (0..h).map(|i| (0..w).map(|j| init(i, j)).collect()).collect::<Vec<_>>();
       Grid { h, w, grid }
     }
     pub fn get(&self, i: usize, j: usize) -> &T {
