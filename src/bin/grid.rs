@@ -11,7 +11,7 @@ mod tests {
   fn test() {
     let g = [".#..#.", ".#.###", ".###.#", "......", "#.###."];
     let g: Vec<Vec<char>> = g.iter().map(|&line| line.chars().collect()).collect();
-    let grid = grid::Grid::new(g, '.');
+    let grid = grid::Grid::new(g);
     let x = grid.get(0, 2);
   }
 }
@@ -24,20 +24,13 @@ pub mod grid {
     h: usize,
     w: usize,
     grid: Vec<Vec<T>>,
-    transpose: Vec<Vec<T>>,
-    modified_row: Vec<bool>,
-    modified_column: Vec<bool>,
   }
-  impl<T> Grid<T> {
-    pub fn new(grid: Vec<Vec<T>>, init: T) -> Self
-    where
-      T: Clone,
-    {
+  impl<'a, T> Grid<T> {
+    pub fn new(grid: Vec<Vec<T>>) -> Self {
       let h = grid.len();
       let w = grid[0].len();
       assert!(grid.iter().all(|line| line.len() == w));
-      let transpose = vec![vec![init.clone(); h]; w];
-      Grid { h, w, grid, transpose, modified_row: vec![false; h], modified_column: vec![false; w] }
+      Grid { h, w, grid }
     }
     pub fn empty(h: usize, w: usize, init: T) -> Self
     where
@@ -45,23 +38,13 @@ pub mod grid {
       Vec<T>: Clone,
     {
       let grid = vec![vec![init.clone(); w]; h];
-      let transpose = vec![vec![init.clone(); h]; w];
-      Grid { h, w, grid, transpose, modified_row: vec![false; h], modified_column: vec![false; w] }
+      Grid { h, w, grid }
     }
-    pub fn get(&self, i: usize, j: usize) -> T
-    where
-      T: Clone,
-    {
-      self.grid[i][j].clone()
+    pub fn get(&self, i: usize, j: usize) -> &T {
+      &self.grid[i][j]
     }
-    pub fn update(&mut self, i: usize, j: usize, x: T)
-    where
-      T: Clone,
-    {
-      self.modified_row[i] = true;
-      self.modified_column[j] = true;
-      self.grid[i][j] = x.clone();
-      self.transpose[j][i] = x.clone();
+    pub fn update(&mut self, i: usize, j: usize, x: T) {
+      self.grid[i][j] = x;
     }
     pub fn neighbour(&self, i: usize, j: usize, eight: bool) -> Vec<(usize, usize)> {
       let dirs = if eight { EIGHT_NEIGHBOUR.to_vec() } else { FOUR_NEIGHBOUR.to_vec() };
@@ -74,27 +57,45 @@ pub mod grid {
       }
       res
     }
-    pub fn row(&self, i: usize) -> &Vec<T> {
-      &self.grid[i]
+    pub fn row(&'a self, i: usize) -> RowIter<'a, T> {
+      RowIter { grid: &self, i, j: 0 }
     }
-    pub fn column(&self, j: usize) -> &Vec<T> {
-      &self.transpose[j]
+    pub fn column(&'a self, j: usize) -> ColumnIter<'a, T> {
+      ColumnIter { grid: &self, i: 0, j }
     }
-    pub fn make_column(&mut self, j: usize)
-    where
-      T: Clone,
-    {
-      for i in 0..self.h {
-        self.transpose[j][i] = self.grid[i][j].clone();
+  }
+
+  pub struct RowIter<'a, T> {
+    grid: &'a Grid<T>,
+    i: usize,
+    j: usize,
+  }
+  impl<'a, T> Iterator for RowIter<'a, T> {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+      if self.i == self.grid.h {
+        return None;
       }
+      let res = &self.grid.grid[self.i][self.j];
+      self.j += 1;
+      Some(res)
     }
-    pub fn make_transpose(&mut self)
-    where
-      T: Clone,
-    {
-      for j in 0..self.w {
-        self.make_column(j);
+  }
+
+  pub struct ColumnIter<'a, T> {
+    grid: &'a Grid<T>,
+    i: usize,
+    j: usize,
+  }
+  impl<'a, T> Iterator for ColumnIter<'a, T> {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+      if self.j == self.grid.w {
+        return None;
       }
+      let res = &self.grid.grid[self.i][self.j];
+      self.i += 1;
+      Some(res)
     }
   }
 }
