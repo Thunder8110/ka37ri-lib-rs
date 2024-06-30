@@ -99,6 +99,18 @@ pub mod grid {
     }
   }
 
+  impl<T: Clone> Grid<T> {
+    pub fn paste(&mut self, i: usize, j: usize, other: &Grid<T>) {
+      let oh = other.h;
+      let ow = other.w;
+      for x in 0..oh {
+        for y in 0..ow {
+          self[(i + x, j + y)] = other[(x, y)].clone();
+        }
+      }
+    }
+  }
+
   impl<T> Index<(usize, usize)> for Grid<T> {
     type Output = T;
     fn index(&self, (i, j): (usize, usize)) -> &T {
