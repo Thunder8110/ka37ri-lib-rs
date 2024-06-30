@@ -19,9 +19,9 @@ use super::grid;
     assert_eq!(grid[(1, 4)], '#');
     assert_eq!(grid.row(2).copied().collect_vec(), vec!['.', '#', '#', '#', '.', '#']);
     assert_eq!(grid.column(3).copied().collect_vec(), vec!['.', '#', '#', '.', '#']);
-    assert_eq!(grid.neighbour(2, 3, false).iter().copied().sorted().collect_vec(), vec![(1, 3), (2, 2), (2, 4), (3, 3)]);
-    assert_eq!(grid.neighbour(2, 3, true).iter().copied().sorted().collect_vec(), vec![(1, 2), (1, 3), (1, 4), (2, 2), (2, 4), (3, 2), (3, 3), (3, 4)]);
-    assert_eq!(grid.neighbour(0, 0, false).iter().copied().sorted().collect_vec(), vec![(0, 1), (1, 0)]);
+    assert_eq!(grid.neighbour(2, 3, false).sorted().collect_vec(), vec![(1, 3), (2, 2), (2, 4), (3, 3)]);
+    assert_eq!(grid.neighbour(2, 3, true).sorted().collect_vec(), vec![(1, 2), (1, 3), (1, 4), (2, 2), (2, 4), (3, 2), (3, 3), (3, 4)]);
+    assert_eq!(grid.neighbour(0, 0, false).sorted().collect_vec(), vec![(0, 1), (1, 0)]);
     let mut other = grid::Grid::empty(5, 6, '.');
     for (i, j) in [
       (0, 1), (0, 4),
@@ -79,16 +79,17 @@ pub mod grid {
     pub fn update(&mut self, i: usize, j: usize, x: T) {
       self.grid[i][j] = x;
     }
-    pub fn neighbour(&self, i: usize, j: usize, eight: bool) -> Vec<(usize, usize)> {
-      let dirs = if eight { EIGHT_NEIGHBOUR.to_vec() } else { FOUR_NEIGHBOUR.to_vec() };
-      let mut res = Vec::new();
-      for (di, dj) in dirs {
+    pub fn neighbour(&self, i: usize, j: usize, eight: bool) -> impl Iterator<Item = (usize, usize)> + '_ {
+      let dirs = if eight { EIGHT_NEIGHBOUR.iter() } else { FOUR_NEIGHBOUR.iter() };
+      dirs.filter_map(move |(di, dj)| {
         let ni = i as isize + di;
         let nj = j as isize + dj;
-        if 0 > ni || ni >= self.h as isize || 0 > nj || nj >= self.w as isize { continue; }
-        res.push((ni as usize, nj as usize));
-      }
-      res
+        if 0 > ni || ni >= self.h as isize || 0 > nj || nj >= self.w as isize {
+          None
+        } else {
+          Some((ni as usize, nj as usize))
+        }
+      })
     }
     pub fn row(&'a self, i: usize) -> RowIter<'a, T> {
       RowIter { grid: &self, i, j: 0 }
