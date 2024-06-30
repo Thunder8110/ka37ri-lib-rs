@@ -22,6 +22,7 @@ use super::grid;
     assert_eq!(grid.neighbour(2, 3, false).sorted().collect_vec(), vec![(1, 3), (2, 2), (2, 4), (3, 3)]);
     assert_eq!(grid.neighbour(2, 3, true).sorted().collect_vec(), vec![(1, 2), (1, 3), (1, 4), (2, 2), (2, 4), (3, 2), (3, 3), (3, 4)]);
     assert_eq!(grid.neighbour(0, 0, false).sorted().collect_vec(), vec![(0, 1), (1, 0)]);
+    assert_eq!(grid.neighbour_with_content(2, 3, false).sorted().collect_vec(), vec![(1, 3, &'#'), (2, 2, &'#'), (2, 4, &'.'), (3, 3, &'.')]);
     let mut other = grid::Grid::empty(5, 6, '.');
     for (i, j) in [
       (0, 1), (0, 4),
@@ -88,6 +89,18 @@ pub mod grid {
           None
         } else {
           Some((ni as usize, nj as usize))
+        }
+      })
+    }
+    pub fn neighbour_with_content(&self, i: usize, j: usize, eight: bool) -> impl Iterator<Item = (usize, usize, &T)> + '_ {
+      let dirs = if eight { EIGHT_NEIGHBOUR.iter() } else { FOUR_NEIGHBOUR.iter() };
+      dirs.filter_map(move |(di, dj)| {
+        let ni = i as isize + di;
+        let nj = j as isize + dj;
+        if 0 > ni || ni >= self.h as isize || 0 > nj || nj >= self.w as isize {
+          None
+        } else {
+          Some((ni as usize, nj as usize, &self.grid[ni as usize][nj as usize]))
         }
       })
     }
