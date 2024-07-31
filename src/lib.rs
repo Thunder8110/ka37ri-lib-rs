@@ -94,7 +94,7 @@ fn input() -> String {
 }
 
 #[snippet("bsi")]
-fn binary_search_integer(left: u64, right: u64, pred: fn(u64) -> bool) -> u64 {
+fn binary_search_integer(left: u64, right: u64, pred: impl Fn(u64) -> bool) -> u64 {
   let mut l = left;
   let mut r = right;
   while r - l > 1 {
@@ -159,7 +159,7 @@ fn ext_euc_pos(a: i64, b: i64) -> (i64, i64, i64) {
 }
 
 #[snippet("acc")]
-fn accumulate<T>(iter: impl Iterator<Item = T>, init: T, unit: T, func: fn(T, T) -> T) -> impl Iterator<Item = T>
+fn accumulate<T>(iter: impl Iterator<Item = T>, init: T, unit: T, func: impl Fn(T, T) -> T) -> impl Iterator<Item = T>
   where T: Clone
 {
   std::iter::once(unit).chain(iter).scan(init, move |acc, x| {
