@@ -275,6 +275,17 @@ fn str_to_int_pos(s: &str, b: i64) -> i64 {
   res
 }
 
+#[snippet("its")]
+fn intersection((a, b): (i64, i64), (c, d): (i64, i64)) -> Option<(i64, i64)> {
+  assert!(a <= b && c <= d, "invalid range");
+  let (l, r) = (a.max(c), b.min(d));
+  if l < r {
+    Some((l, r))
+  } else {
+    None
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
