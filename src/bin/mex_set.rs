@@ -81,7 +81,9 @@ pub mod mexset {
     }
 
     pub fn insert_multi(&mut self, x: usize, n: usize) {
-      self.excluded.insert(self.bound);
+      if self.included.get(&self.bound).unwrap_or(&0) == &0 {
+        self.excluded.insert(self.bound);
+      }
       self.bound += 1;
 
       if *self.included.get(&x).unwrap_or(&0) == 0 {
@@ -112,6 +114,20 @@ pub mod mexset {
   impl PartialEq for MexSet {
     fn eq(&self, other: &Self) -> bool {
       self.included == other.included
+    }
+  }
+
+  impl FromIterator<usize> for MexSet {
+    fn from_iter<I: IntoIterator<Item = usize>>(iter: I) -> Self {
+      let mut included = HashMap::new();
+      for x in iter {
+        *included.entry(x).or_insert(0) += 1;
+      }
+
+      let bound = included.len() + 1;
+      let excluded = (0..bound).filter(|x| !included.contains_key(x)).collect();
+
+      Self { bound, excluded, included }
     }
   }
   
