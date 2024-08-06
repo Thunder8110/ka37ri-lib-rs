@@ -1,6 +1,7 @@
 use std::{cmp::{Ordering, Reverse}, collections::BinaryHeap};
 
 use cargo_snippet::snippet;
+use num::Num;
 
 #[snippet("pf")]
 fn prime_factor(n: i64) -> Vec<(i64, u32)> {
@@ -94,11 +95,13 @@ fn input() -> String {
 }
 
 #[snippet("bsi")]
-fn binary_search_integer(left: u64, right: u64, pred: impl Fn(u64) -> bool) -> u64 {
+fn binary_search_integer<T>(left: T, right: T, pred: impl Fn(T) -> bool) -> T
+  where T: Num + PartialOrd + From<i32> + Copy
+{
   let mut l = left;
   let mut r = right;
-  while r - l > 1 {
-    let m = l + (r - l) / 2;
+  while r - l > 1.into() {
+    let m = l + (r - l) / 2.into();
     if pred(m) {
       l = m;
     }else {
