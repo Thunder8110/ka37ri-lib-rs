@@ -800,6 +800,14 @@
       "}"
     ]
   },
+  "ipar": {
+    "prefix": "ipar",
+    "body": [
+      "fn is_parindrome(s: &String) -> bool {",
+      "  s.chars().eq(s.chars().rev())",
+      "}"
+    ]
+  },
   "ipt_sp": {
     "prefix": "ipt_sp",
     "body": [
@@ -990,6 +998,14 @@
       "}"
     ]
   },
+  "revs": {
+    "prefix": "revs",
+    "body": [
+      "fn reversed_str(s: &String) -> String {",
+      "  s.chars().rev().collect()",
+      "}"
+    ]
+  },
   "rh": {
     "prefix": "rh",
     "body": [
@@ -1145,6 +1161,16 @@
       "    res = res * b + d;",
       "  }",
       "  res",
+      "}"
+    ]
+  },
+  "trns": {
+    "prefix": "trns",
+    "body": [
+      "fn translate(s: &String, map: &HashMap<char, Option<char>>) -> String {",
+      "  s.chars()",
+      "    .filter_map(|c| map.get(&c).copied().unwrap_or(Some(c)))",
+      "    .collect()",
       "}"
     ]
   },
