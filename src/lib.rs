@@ -1,4 +1,4 @@
-use std::{cmp::{Ordering, Reverse}, collections::BinaryHeap};
+use std::{cmp::{Ordering, Reverse}, collections::{BinaryHeap, HashMap}};
 
 use cargo_snippet::snippet;
 use num::Num;
@@ -289,6 +289,21 @@ fn intersection((a, b): (i64, i64), (c, d): (i64, i64)) -> Option<(i64, i64)> {
   }
 }
 
+#[snippet("revs")]
+fn reversed_str(s: &String) -> String {
+  s.chars().rev().collect()
+}
+
+#[snippet("ipar")]
+fn is_parindrome(s: &String) -> bool {
+  s.chars().eq(s.chars().rev())
+}
+
+#[snippet("trns")]
+fn translate(s: &String, map: &HashMap<char, Option<char>>) -> String {
+  s.chars().filter_map(|c| map.get(&c).copied().unwrap_or(Some(c))).collect()
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -540,5 +555,34 @@ mod tests {
     assert_eq!(res30, 12345);
     assert_eq!(res31, 12345);
     assert_eq!(res32, 12345);
+  }
+
+  #[test]
+  fn strings_test() {
+    let s = "abracadabra".to_owned();
+    assert_eq!(reversed_str(&s), "arbadacarba");
+    assert!(!is_parindrome(&s));
+
+    let t = "abcba".to_owned();
+    assert_eq!(reversed_str(&t), "abcba");
+    assert!(is_parindrome(&t));
+
+    let s = "abracadabra".to_owned();
+    let map = [
+      ('a', Some('b')),
+    ].into();
+    assert_eq!(translate(&s, &map), "bbrbcbdbbrb");
+    let map = [
+      ('a', None),
+      ('b', Some('a')),
+    ].into();
+    assert_eq!(translate(&s, &map), "arcdar");
+    let map = [
+      ('a', Some('b')),
+      ('b', Some('c')),
+      ('c', Some('a')),
+    ].into();
+    assert_eq!(translate(&s, &map), "bcrbabdbcrb");
+    
   }
 }
