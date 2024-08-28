@@ -1,0 +1,13 @@
+name: Generate snippet.json
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ls
+        shell: bash
+        run: ls
