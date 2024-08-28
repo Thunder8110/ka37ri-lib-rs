@@ -12,12 +12,8 @@ jobs:
       - run: rustup component add rustfmt
       - run: cargo install cargo-snippet --features="binaries"
       - run: ./snippet.sh
-      - run: cat snippet.json
-      - run: |
-        git config user.email "doubsing0125@gmail.com"
-        git config user.name "KA37RI"
-      - run: |
-        git add snippet.json
-        git commit -m "[Actions] Update snippet.json"
-        git push
-
+      - run: git config user.email "doubsing0125@gmail.com"
+      - run: git config user.name "KA37RI"
+      - run: git add snippet.json
+      - run: git commit -m "[Actions] Update snippet.json"
+      - run: git push
