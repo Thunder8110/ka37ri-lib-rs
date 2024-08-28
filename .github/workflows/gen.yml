@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Ls
-        shell: bash
-        run: ls
+      - run: rustup component add rustfmt
+      - run: cargo install cargo-snippet --features="binaries"
+      - run: ./snippet.sh
+      - run: cat snippet.json
