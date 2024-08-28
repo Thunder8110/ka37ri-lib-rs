@@ -1,6 +1,7 @@
 use std::{cmp::{Ordering, Reverse}, collections::{BinaryHeap, HashMap}};
 
 use cargo_snippet::snippet;
+use num::Num;
 
 #[snippet("pf")]
 fn prime_factor(n: i64) -> Vec<(i64, u32)> {
