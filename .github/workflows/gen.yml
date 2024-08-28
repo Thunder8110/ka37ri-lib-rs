@@ -1,7 +1,11 @@
 name: Generate snippet.json
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
 
 jobs:
   generate:
