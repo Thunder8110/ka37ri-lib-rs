@@ -1,13 +1,23 @@
 name: Generate snippet.json
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
 
 jobs:
   generate:
     name: Generate
     runs-on: ubuntu-latest
     steps:
-      - name: Ls
-        shell: bash
-        run: ls
+      - uses: actions/checkout@v4
+      - run: rustup component add rustfmt
+      - run: cargo install cargo-snippet --features="binaries"
+      - run: ./snippet.sh
+      - run: git config user.email "doubsing0125@gmail.com"
+      - run: git config user.name "KA37RI"
+      - run: git add snippet.json
+      - run: git commit -m "[Actions] Update snippet.json"
+      - run: git push
