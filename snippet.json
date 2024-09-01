@@ -1086,12 +1086,12 @@
   "rl": {
     "prefix": "rl",
     "body": [
-      "fn run_length(s: String) -> Vec<(char, usize)> {",
-      "  let mut chs = s.chars();",
+      "fn run_length<T: Eq + Clone>(seq: impl IntoIterator<Item = T>) -> Vec<(T, usize)> {",
+      "  let mut itr = seq.into_iter().peekable();",
       "  let mut res = Vec::new();",
-      "  let mut curr = chs.nth(0).unwrap();",
-      "  let mut num = 1;",
-      "  for c in chs {",
+      "  let mut curr = itr.peek().unwrap().clone();",
+      "  let mut num = 0;",
+      "  for c in itr {",
       "    if c == curr {",
       "      num += 1;",
       "    } else {",
