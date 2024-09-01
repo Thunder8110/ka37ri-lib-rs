@@ -44,12 +44,12 @@ fn eratosthenes(n: usize) -> Vec<usize> {
 }
 
 #[snippet("rl")]
-fn run_length(s: String) -> Vec<(char, usize)> {
-  let mut chs = s.chars();
+fn run_length<T: Eq + Clone>(seq: impl IntoIterator<Item = T>) -> Vec<(T, usize)> {
+  let mut itr = seq.into_iter().peekable();
   let mut res = Vec::new();
-  let mut curr = chs.nth(0).unwrap();
-  let mut num = 1;
-  for c in chs {
+  let mut curr = itr.peek().unwrap().clone();
+  let mut num = 0;
+  for c in itr {
     if c == curr {
       num += 1;
     }else {
@@ -329,12 +329,20 @@ mod tests {
   // }
   #[test]
   fn rl_test() {
-    let res0 = run_length("aaabbccacb".to_string());
+    let res0 = run_length("aaabbccacb".to_owned().chars());
     let exp0 = vec![('a', 3), ('b', 2), ('c', 2), ('a', 1), ('c', 1), ('b', 1)];
-    let res1 = run_length("1234".to_string());
+    let res1 = run_length("1234".to_owned().chars());
     let exp1 = vec![('1', 1), ('2', 1), ('3', 1), ('4', 1)];
+    let seq2 = vec![1, 1, 1, 1, 1, 2, 2, 1, 1, 1];
+    let res2 = run_length(seq2);
+    let exp2 = vec![(1, 5), (2, 2), (1, 3)];
+    let seq3 = vec![9, 9, 8, 2, 4, 4, 3, 5, 3];
+    let res3 = run_length(seq3.iter().copied());
+    let exp3 = vec![(9, 2), (8, 1), (2, 1), (4, 2), (3, 1), (5, 1), (3, 1)];
     assert_eq!(res0, exp0);
     assert_eq!(res1, exp1);
+    assert_eq!(res2, exp2);
+    assert_eq!(res3, exp3);
   }
   #[test]
   fn sr_test() {
