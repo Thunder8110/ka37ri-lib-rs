@@ -37,6 +37,10 @@ use super::grid;
       other[ij] = '#';
     }
     assert_eq!(grid, other);
+    let gr = [".##..", "##..#", ".##.#", "..#.#", "###..", "....#"];
+    let gr: Vec<Vec<char>> = gr.iter().map(|line| line.chars().collect()).collect();
+    let grid_rot = grid::Grid::new(gr);
+    assert_eq!(grid.rotate(1), grid_rot);
   }
 }
 
@@ -70,7 +74,7 @@ pub mod grid {
       let grid = vec![vec![init.clone(); w]; h];
       Grid { h, w, grid }
     }
-    pub fn empty_by(h: usize, w: usize, init: fn(usize, usize) -> T) -> Self {
+    pub fn empty_by(h: usize, w: usize, init: impl Fn(usize, usize) -> T) -> Self {
       let grid = (0..h).map(|i| (0..w).map(|j| init(i, j)).collect()).collect_vec();
       Grid { h, w, grid }
     }
@@ -120,6 +124,17 @@ pub mod grid {
         for y in 0..ow {
           self[(i + x, j + y)] = other[(x, y)].clone();
         }
+      }
+    }
+    pub fn rotate(&self, count: isize) -> Self {
+      let count = count.rem_euclid(4);
+      let (h, w) = (self.h, self.w);
+      match count {
+        0 => self.clone(),
+        1 => Grid::empty_by(w, h, |i, j| self[(j, w - 1 - i)].clone()),
+        2 => Grid::empty_by(h, w, |i, j| self[(h - 1 - i, w - 1 - j)].clone()),
+        3 => Grid::empty_by(w, h, |i, j| self[(h - 1 - j, i)].clone()),
+        _ => unreachable!(),
       }
     }
   }
