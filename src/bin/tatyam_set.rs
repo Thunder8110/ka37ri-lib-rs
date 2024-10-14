@@ -5,9 +5,90 @@ fn main() {
 #[cfg(test)]
 mod tests {
   use crate::tatyam_set::TatyamSet;
+
   #[test]
-  fn test() {
+  fn empty_test() {
+    let mut s = TatyamSet::<i32>::new();
+    assert_eq!(s.len(), 0);
+    assert!(s.is_empty());
+    assert!(!s.contains(&1));
+    assert_eq!(s.iter().copied().collect::<Vec<_>>(), vec![]);
+    assert!(s.insert(1));
+    assert!(!s.is_empty());
   }
+
+  #[test]
+  fn contain_test() {
+    let mut s = TatyamSet::from_iter([1].iter().copied());
+    assert_eq!(s.len(), 1);
+    assert!(s.insert(4));
+    assert_eq!(s.len(), 2);
+    assert!(s.contains(&1));
+    assert!(!s.contains(&2));
+    assert!(s.contains(&4));
+    assert!(!s.insert(1));
+    assert_eq!(s.iter().copied().collect::<Vec<_>>(), vec![1, 4]);
+  }
+
+  #[test]
+  fn remove_test() {
+    let mut s = TatyamSet::from_iter([1, 2, 4].iter().copied());
+    assert!(s.insert(7)); // { 1, 2, 4, 7 }
+    assert!(s.remove(&2));
+    assert!(!s.remove(&2)); // { 1, 4, 7 }
+    assert!(!s.remove(&3));
+    assert_eq!(s.len(), 3);
+    assert_eq!(s.iter().copied().collect::<Vec<_>>(), vec![1, 4, 7]);
+  }
+
+  #[test]
+  fn pop_test() {
+    let l = [
+      1, 4, 7, 11, 14, 16, 17,
+      19, 21, 22, 23, 25, 30, 38, 45,
+      57, 68, 83, 91, 121, 140, 187, 200,
+    ];
+    let mut s = TatyamSet::from_iter(l.iter().copied());
+    assert_eq!(s.pop(0), Some(1));
+    assert!(s.insert(2));
+    assert_eq!(s.pop(2), Some(7));
+    assert_eq!(s.pop(20), Some(187));
+    let v = vec![
+      2, 4, 11, 14, 16, 17, 19, 21,
+      22, 23, 25, 30, 38, 45, 57, 68,
+      83, 91, 121, 140, 200,
+    ];
+    assert_eq!(s.iter().copied().collect::<Vec<_>>(), v);
+  }
+
+  #[test]
+  fn index_test() {
+    let l = [
+      1, 2, 4, 7, 11, 14, 16, 17,
+      19, 21, 22, 23, 25, 30, 38, 45,
+      57, 68, 83, 91, 121, 140, 187, 200,
+    ];
+    let s = TatyamSet::from_iter(l.iter().copied());
+    assert_eq!(s[1], 2);
+    assert_eq!(s[3], 7);
+    assert_eq!(s[6], 16);
+    assert_eq!(s[10], 22);
+    assert_eq!(s[17], 68);
+    assert_eq!(s[22], 187);
+    assert_eq!(s[23], 200);
+  }
+
+  #[test]
+  fn search_test() {
+    let s = TatyamSet::from_iter([2, 4, 5, 8, 13, 17, 21].iter().copied());
+    assert_eq!(s.le(&8), Some(&8));
+    assert_eq!(s.le(&7), Some(&5));
+    assert_eq!(s.lt(&8), Some(&5));
+    assert_eq!(s.ge(&13), Some(&13));
+    assert_eq!(s.ge(&14), Some(&17));
+    assert_eq!(s.gt(&13), Some(&17));
+  }
+
 }
 
 pub mod tatyam_set {
