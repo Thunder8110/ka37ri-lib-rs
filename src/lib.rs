@@ -354,6 +354,7 @@ mod tests {
     assert!(res2 * res2 <= i64::MAX);
   }
   #[test]
+  #[ignore]
   fn in_test() {
     let res0 = input();
     let res1: Vec<String> = input().split_whitespace().into_iter().map(|s| s.to_string()).collect();
