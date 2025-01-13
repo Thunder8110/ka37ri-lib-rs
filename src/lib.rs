@@ -306,6 +306,17 @@ fn translate(s: &String, map: &HashMap<char, Option<char>>) -> String {
   s.chars().filter_map(|c| map.get(&c).copied().unwrap_or(Some(c))).collect()
 }
 
+#[snippet("mv")]
+fn move_coords((h, w): (usize, usize), (x, y): (usize, usize), (dx, dy): (isize, isize)) -> Option<(usize, usize)> {
+  let (nx, ofx) = x.overflowing_add_signed(dx);
+  let (ny, ofy) = y.overflowing_add_signed(dy);
+  if ofx || ofy || nx >= h || ny >= w {
+    None
+  } else {
+    Some((nx, ny))
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
