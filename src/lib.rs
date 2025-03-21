@@ -317,6 +317,22 @@ fn move_coords((h, w): (usize, usize), (x, y): (usize, usize), (dx, dy): (isize,
   }
 }
 
+#[snippet("swc")]
+fn swap_case(input: &str) -> String {
+  // from change_case crate
+  input
+    .chars()
+    .into_iter()
+    .map(|v| {
+      if v.is_lowercase() {
+        v.to_uppercase().to_string()
+      } else {
+        v.to_lowercase().to_string()
+      }
+    })
+    .collect()
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
