@@ -15,6 +15,7 @@ use super::grid;
     let g: Vec<Vec<char>> = g.iter().map(|line| line.chars().collect()).collect();
     let grid = grid::Grid::new(g);
     println!("{:#}", grid);
+    assert_eq!(format!("{:#}", grid), ".#..#.\n.#.###\n.###.#\n......\n#.###.");
     assert_eq!(grid.get(0, 2), &'.');
     assert_eq!(grid[(1, 4)], '#');
     assert_eq!(grid.row(2).copied().collect_vec(), vec!['.', '#', '#', '#', '.', '#']);
@@ -156,11 +157,13 @@ pub mod grid {
     T: Display,
   {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+      let mut lines = Vec::with_capacity(self.h);
+      let sep = if f.alternate() { "" } else { " " };
       for i in 0..self.h {
-        let sep = if f.alternate() { "" } else { " " };
         let line = self.row(i).map(|x| x.to_string()).join(sep);
-        writeln!(f, "{}", line)?;
+        lines.push(line);
       }
+      f.write_str(&lines.join("\n"))?;
       Ok(())
     }
   }
