@@ -1,4 +1,7 @@
-use std::{cmp::{Ordering, Reverse}, collections::{BinaryHeap, HashMap}};
+use std::{
+  cmp::{Ordering, Reverse},
+  collections::{BinaryHeap, HashMap}, ops::Mul,
+};
 
 use cargo_snippet::snippet;
 use num::{Num, One};
@@ -9,7 +12,9 @@ fn prime_factor(n: i64) -> Vec<(i64, u32)> {
   let mut res = Vec::new();
   for i in 2..n {
     let mut e = 0;
-    if i * i > n { break; }
+    if i * i > n {
+      break;
+    }
     while x % i == 0 {
       x /= i;
       e += 1;
@@ -18,7 +23,9 @@ fn prime_factor(n: i64) -> Vec<(i64, u32)> {
       res.push((i, e))
     }
   }
-  if x > 1 { res.push((x, 1)); }
+  if x > 1 {
+    res.push((x, 1));
+  }
   res
 }
 
@@ -30,15 +37,17 @@ fn eratosthenes(n: usize) -> Vec<usize> {
   let mut i = 2;
   while i * i <= n {
     if arr[i] {
-      for x in i..=(n/i) {
-        arr[i*x] = false;
+      for x in i..=(n / i) {
+        arr[i * x] = false;
       }
     }
     i += 1;
   }
   let mut primes = Vec::new();
   for j in 0..=n {
-    if arr[j] { primes.push(j); }
+    if arr[j] {
+      primes.push(j);
+    }
   }
   primes
 }
@@ -52,7 +61,7 @@ fn run_length<T: Eq + Clone>(seq: impl IntoIterator<Item = T>) -> Vec<(T, usize)
   for c in itr {
     if c == curr {
       num += 1;
-    }else {
+    } else {
       res.push((curr, num));
       curr = c;
       num = 1;
@@ -78,9 +87,9 @@ fn bs_sqrt(n: i64) -> i64 {
     let m_sq = mid * mid;
     if m_sq == n {
       return mid;
-    }else if m_sq > n {
+    } else if m_sq > n {
       right = mid;
-    }else {
+    } else {
       left = mid;
     }
   }
@@ -96,7 +105,8 @@ fn input() -> String {
 
 #[snippet("bsi")]
 fn binary_search_integer<T>(left: T, right: T, pred: impl Fn(T) -> bool) -> T
-  where T: Num + PartialOrd + One + Copy
+where
+  T: Num + PartialOrd + One + Copy,
 {
   let one = T::one();
   let two = one + one;
@@ -106,7 +116,7 @@ fn binary_search_integer<T>(left: T, right: T, pred: impl Fn(T) -> bool) -> T
     let m = l + (r - l) / two;
     if pred(m) {
       l = m;
-    }else {
+    } else {
       r = m;
     }
   }
@@ -151,21 +161,29 @@ fn ext_euc(a: i64, b: i64) -> (i64, i64, i64) {
 #[snippet("eucp")]
 fn ext_euc_pos(a: i64, b: i64) -> (i64, i64, i64) {
   assert!(a > 0 && b > 0);
-  let (mut xp, mut xc) = (1,  0);
-  let (mut yp, mut yc) = (0,  1);
-  let (mut zp, mut zc) = (a,  b);
+  let (mut xp, mut xc) = (1, 0);
+  let (mut yp, mut yc) = (0, 1);
+  let (mut zp, mut zc) = (a, b);
   loop {
     let q = zp / zc;
     (zp, zc) = (zc, zp - q * zc);
-    if zc == 0 { break (xc, yc, zp); }
+    if zc == 0 {
+      break (xc, yc, zp);
+    }
     (xp, xc) = (xc, xp - q * xc);
     (yp, yc) = (yc, yp - q * yc);
   }
 }
 
 #[snippet("acc")]
-fn accumulate<T>(iter: impl Iterator<Item = T>, init: T, unit: T, func: impl Fn(T, T) -> T) -> impl Iterator<Item = T>
-  where T: Clone
+fn accumulate<T>(
+  iter: impl Iterator<Item = T>,
+  init: T,
+  unit: T,
+  func: impl Fn(T, T) -> T,
+) -> impl Iterator<Item = T>
+where
+  T: Clone,
 {
   std::iter::once(unit).chain(iter).scan(init, move |acc, x| {
     *acc = func(acc.clone(), x);
@@ -183,7 +201,7 @@ fn pattern_range_sum(patt: &[(i64, usize)], n: usize) -> i64 {
     if rem < y {
       res += x * rem as i64;
       break;
-    }else {
+    } else {
       res += x * y as i64;
       rem -= y;
     }
@@ -233,7 +251,11 @@ fn int_to_str_pos(n: i64, b: i64) -> String {
   if n == 0 {
     "0".to_string()
   } else {
-    radix_seq(n, b).iter().rev().map(|&x| DIGITS[x as usize] as char).collect()
+    radix_seq(n, b)
+      .iter()
+      .rev()
+      .map(|&x| DIGITS[x as usize] as char)
+      .collect()
   }
 }
 
@@ -248,7 +270,8 @@ fn radix_seq(n: i64, b: i64) -> Vec<i64> {
       x /= b;
       Some(r)
     }
-  }).collect::<Vec<_>>()
+  })
+  .collect::<Vec<_>>()
 }
 
 #[snippet("s2i", include = "s2ip")]
@@ -265,7 +288,11 @@ fn str_to_int(s: String, b: i64) -> i64 {
 #[snippet("s2ip")]
 fn str_to_int_pos(s: &str, b: i64) -> i64 {
   assert!(2 <= b && b <= 36, "base must be between 2 and 36");
-  assert!(s.chars().all(|c| c.is_digit(b as u32) || c.is_ascii_alphabetic()), "invalid character");
+  assert!(
+    s.chars()
+      .all(|c| c.is_digit(b as u32) || c.is_ascii_alphabetic()),
+    "invalid character"
+  );
   let chars = s.chars();
   let mut res = 0;
   for c in chars {
@@ -303,11 +330,17 @@ fn is_parindrome(s: &String) -> bool {
 
 #[snippet("trns")]
 fn translate(s: &String, map: &HashMap<char, Option<char>>) -> String {
-  s.chars().filter_map(|c| map.get(&c).copied().unwrap_or(Some(c))).collect()
+  s.chars()
+    .filter_map(|c| map.get(&c).copied().unwrap_or(Some(c)))
+    .collect()
 }
 
 #[snippet("mv")]
-fn move_coords((h, w): (usize, usize), (x, y): (usize, usize), (dx, dy): (isize, isize)) -> Option<(usize, usize)> {
+fn move_coords(
+  (h, w): (usize, usize),
+  (x, y): (usize, usize),
+  (dx, dy): (isize, isize),
+) -> Option<(usize, usize)> {
   let (nx, ofx) = x.overflowing_add_signed(dx);
   let (ny, ofy) = y.overflowing_add_signed(dy);
   if ofx || ofy || nx >= h || ny >= w {
@@ -385,7 +418,11 @@ mod tests {
   #[test]
   fn in_test() {
     let res0 = input();
-    let res1: Vec<String> = input().split_whitespace().into_iter().map(|s| s.to_string()).collect();
+    let res1: Vec<String> = input()
+      .split_whitespace()
+      .into_iter()
+      .map(|s| s.to_string())
+      .collect();
     println!("{}", res0);
     println!("{:?}", res1);
   }
@@ -431,11 +468,7 @@ mod tests {
 
   #[test]
   fn pas_test() {
-    let arr0 = vec![
-      vec![1, 2, 3, 4],
-      vec![5, 6, 7, 8],
-      vec![9, 10, 11, 12],
-    ];
+    let arr0 = vec![vec![1, 2, 3, 4], vec![5, 6, 7, 8], vec![9, 10, 11, 12]];
     let psum0 = two_dimensional_prefix_sum(&arr0);
     let res0 = pattern_area_sum(&psum0, 3, 4);
     let res1 = pattern_area_sum(&psum0, 6, 8);
@@ -605,21 +638,11 @@ mod tests {
     assert!(is_parindrome(&t));
 
     let s = "abracadabra".to_owned();
-    let map = [
-      ('a', Some('b')),
-    ].into();
+    let map = [('a', Some('b'))].into();
     assert_eq!(translate(&s, &map), "bbrbcbdbbrb");
-    let map = [
-      ('a', None),
-      ('b', Some('a')),
-    ].into();
+    let map = [('a', None), ('b', Some('a'))].into();
     assert_eq!(translate(&s, &map), "arcdar");
-    let map = [
-      ('a', Some('b')),
-      ('b', Some('c')),
-      ('c', Some('a')),
-    ].into();
+    let map = [('a', Some('b')), ('b', Some('c')), ('c', Some('a'))].into();
     assert_eq!(translate(&s, &map), "bcrbabdbcrb");
-    
   }
 }
