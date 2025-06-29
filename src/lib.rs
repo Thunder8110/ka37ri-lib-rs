@@ -366,6 +366,36 @@ fn swap_case(input: &str) -> String {
     .collect()
 }
 
+#[snippet("pm")]
+#[snippet(prefix = "use std::ops::Mul;")]
+#[snippet(prefix = "use num::One;")]
+pub fn pow_mod<T: Clone + One + Mul<T, Output = T> + TryInto<u128> + TryFrom<u128> + Default>(base: T, mut exp: usize, md: T) -> T {
+  // from num crate (modified)
+  if exp == 0 {
+    return T::one();
+  }
+
+  let mut base: u128 = base.try_into().unwrap_or_default();
+  let md: u128 = md.try_into().unwrap_or_default();
+  while exp & 1 == 0 {
+    base = base.clone() * base % md;
+    exp >>= 1;
+  }
+  if exp == 1 {
+    return base.try_into().unwrap_or_default();
+  }
+
+  let mut acc = base.clone();
+  while exp > 1 {
+    exp >>= 1;
+    base = base.clone() * base % md;
+    if exp & 1 == 1 {
+      acc = acc * base.clone() % md;
+    }
+  }
+  acc.try_into().unwrap_or_default()
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -644,5 +674,40 @@ mod tests {
     assert_eq!(translate(&s, &map), "arcdar");
     let map = [('a', Some('b')), ('b', Some('c')), ('c', Some('a'))].into();
     assert_eq!(translate(&s, &map), "bcrbabdbcrb");
+  }
+
+  #[test]
+  fn pow_mod_test() {
+    let res0 = pow_mod(2i32, 10, 1000);
+    let res1 = pow_mod(3u32, 7, 100);
+    let res2 = pow_mod(5i64, 3, 13);
+    let res3 = pow_mod(7u64, 4, 50);
+    assert_eq!(res0, 24);
+    assert_eq!(res1, 87);
+    assert_eq!(res2, 8);
+    assert_eq!(res3, 1);
+
+    let res4 = pow_mod(10usize, 0, 1000);
+    let res5 = pow_mod(10isize, 1, 1000);
+    let res6 = pow_mod(10usize, 2, 1000);
+    let res7 = pow_mod(10isize, 3, 1000);
+    assert_eq!(res4, 1);
+    assert_eq!(res5, 10);
+    assert_eq!(res6, 100);
+    assert_eq!(res7, 0);
+
+    let res8 = pow_mod(2u64, 998244352, 998244353);
+    let res9 = pow_mod(19u64, 12345, 67890);
+    let res10 = pow_mod(123u64, 456, 789);
+    assert_eq!(res8, 1);
+    assert_eq!(res9, 30319);
+    assert_eq!(res10, 699);
+
+    let res11 = pow_mod(0u64, 0, 998244353);
+    let res12 = pow_mod(0u64, 1, 998244353);
+    let res13 = pow_mod(0u64, 2, 998244353);
+    assert_eq!(res11, 1);
+    assert_eq!(res12, 0);
+    assert_eq!(res13, 0);
   }
 }
