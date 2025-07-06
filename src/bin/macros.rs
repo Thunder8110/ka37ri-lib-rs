@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use proconio::{input, source};
+  use proconio::input;
   use crate::macros::queries;
 
   queries!(
