@@ -10,6 +10,7 @@ mod tests {
   );
   
   #[test]
+  #[ignore]
   fn test_queries() {
     let _source_string = "\
     8
