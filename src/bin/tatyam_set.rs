@@ -274,7 +274,7 @@ pub mod tatyam_set {
     pub fn lt(&self, x: &T) -> Option<&T> {
       if let Some(i) = self.a.iter().rev().position(|b| b.first().unwrap() < x) {
         let j = self.a[self.a.len()-i-1].partition_point(|y| y < x);
-        Some(&self.a[i][j-1])
+        Some(&self.a[self.a.len()-i-1][j-1])
       } else {
         None
       }
@@ -282,7 +282,7 @@ pub mod tatyam_set {
     pub fn le(&self, x: &T) -> Option<&T> {
       if let Some(i) = self.a.iter().rev().position(|b| b.first().unwrap() <= x) {
         let j = self.a[self.a.len()-i-1].partition_point(|y| y <= x);
-        Some(&self.a[i][j-1])
+        Some(&self.a[self.a.len()-i-1][j-1])
       } else {
         None
       }
