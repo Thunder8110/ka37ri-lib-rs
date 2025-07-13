@@ -186,6 +186,9 @@ pub mod tatyam_set {
     }
     pub fn from_iter<I: Iterator<Item = T>>(iter: I) -> Self {
       let mut ls = iter.collect::<Vec<_>>();
+      if ls.is_empty() {
+        return TatyamSet::new();
+      }
       if ls.iter().zip(ls.iter().skip(1)).any(|(a, b)| a > b) {
         ls.sort();
       }
