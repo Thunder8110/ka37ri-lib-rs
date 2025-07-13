@@ -125,6 +125,45 @@ mod tests {
     assert_eq!(s.gt(&21), None);
   }
 
+  #[test]
+  fn count_test() {
+    let l = [
+      11, 22, 33, 44, 55, 66,
+      77, 88, 99, 101, 111, 121, 131, 141,
+      151, 161, 171, 181, 191, 202, 212, 222,
+      232, 242, 252, 262, 272, 282, 292, 303,
+      313, 323, 333, 343, 353, 363, 373, 383,
+      393, 404, 414, 424, 434, 444, 454, 464,
+      474, 484, 494, 505, 515, 525, 535, 545,
+      555, 565, 575, 585, 595, 606, 616, 626,
+    ];
+    let s = TatyamSet::from_iter(l.iter().copied());
+
+    assert_eq!(s.count_lt(&1), l.iter().filter(|&&x| x < 1).count());
+    assert_eq!(s.count_lt(&11), l.iter().filter(|&&x| x < 11).count());
+    assert_eq!(s.count_lt(&12), l.iter().filter(|&&x| x < 12).count());
+    assert_eq!(s.count_lt(&22), l.iter().filter(|&&x| x < 22).count());
+    assert_eq!(s.count_lt(&100), l.iter().filter(|&&x| x < 100).count());
+    assert_eq!(s.count_lt(&165), l.iter().filter(|&&x| x < 165).count());
+    assert_eq!(s.count_lt(&300), l.iter().filter(|&&x| x < 300).count());
+    assert_eq!(s.count_lt(&444), l.iter().filter(|&&x| x < 444).count());
+    assert_eq!(s.count_lt(&605), l.iter().filter(|&&x| x < 605).count());
+    assert_eq!(s.count_lt(&666), l.iter().filter(|&&x| x < 666).count());
+    assert_eq!(s.count_lt(&999), l.iter().filter(|&&x| x < 999).count());
+
+    assert_eq!(s.count_ge(&1), l.iter().filter(|&&x| x >= 1).count());
+    assert_eq!(s.count_ge(&11), l.iter().filter(|&&x| x >= 11).count());
+    assert_eq!(s.count_ge(&12), l.iter().filter(|&&x| x >= 12).count());
+    assert_eq!(s.count_ge(&22), l.iter().filter(|&&x| x >= 22).count());
+    assert_eq!(s.count_ge(&100), l.iter().filter(|&&x| x >= 100).count());
+    assert_eq!(s.count_ge(&165), l.iter().filter(|&&x| x >= 165).count());
+    assert_eq!(s.count_ge(&300), l.iter().filter(|&&x| x >= 300).count());
+    assert_eq!(s.count_ge(&444), l.iter().filter(|&&x| x >= 444).count());
+    assert_eq!(s.count_ge(&605), l.iter().filter(|&&x| x >= 605).count());
+    assert_eq!(s.count_ge(&666), l.iter().filter(|&&x| x >= 666).count());
+    assert_eq!(s.count_ge(&999), l.iter().filter(|&&x| x >= 999).count());
+  }
+
 }
 
 pub mod tatyam_set {
@@ -255,6 +294,14 @@ pub mod tatyam_set {
         i -= b.len();
       }
       None
+    }
+    pub fn count_lt(&self, x: &T) -> usize {
+      let (i, j) = self.position(x);
+      self.a[..i].iter().map(|b| b.len()).sum::<usize>() + j
+    }
+    pub fn count_ge(&self, x: &T) -> usize {
+      let (i, j) = self.position(x);
+      self.a[i+1..].iter().map(|b| b.len()).sum::<usize>() + self.a[i].len() - j
     }
   }
 
