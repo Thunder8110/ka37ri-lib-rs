@@ -15,6 +15,9 @@ mod tests {
     assert_eq!(s.iter().copied().collect::<Vec<_>>(), vec![]);
     assert!(s.insert(1));
     assert!(!s.is_empty());
+    assert_eq!(s.pop(0), Some(1));
+    assert!(s.is_empty());
+    assert_eq!(s.le(&0), None);
   }
 
   #[test]
@@ -168,6 +171,12 @@ mod tests {
     assert_eq!(s.count_ge(&605), l.iter().filter(|&&x| x >= 605).count());
     assert_eq!(s.count_ge(&666), l.iter().filter(|&&x| x >= 666).count());
     assert_eq!(s.count_ge(&999), l.iter().filter(|&&x| x >= 999).count());
+
+    let s = TatyamSet::new();
+    assert_eq!(s.count_lt(&0), 0);
+    assert_eq!(s.count_ge(&0), 0);
+    assert_eq!(s.count_lt(&100), 0);
+    assert_eq!(s.count_ge(&100), 0);
   }
 
 }
@@ -305,10 +314,16 @@ pub mod tatyam_set {
       None
     }
     pub fn count_lt(&self, x: &T) -> usize {
+      if self.is_empty() {
+        return 0;
+      }
       let (i, j) = self.position(x);
       self.a[..i].iter().map(|b| b.len()).sum::<usize>() + j
     }
     pub fn count_ge(&self, x: &T) -> usize {
+      if self.is_empty() {
+        return 0;
+      }
       let (i, j) = self.position(x);
       self.a[i+1..].iter().map(|b| b.len()).sum::<usize>() + self.a[i].len() - j
     }
