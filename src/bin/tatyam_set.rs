@@ -28,6 +28,37 @@ mod tests {
     assert!(s.contains(&4));
     assert!(!s.insert(1));
     assert_eq!(s.iter().copied().collect::<Vec<_>>(), vec![1, 4]);
+
+    let l = [
+      0, 1, 2, 3, 4, 5, 6, 7,
+      8, 9, 11, 22, 33, 44, 55, 66,
+      77, 88, 99, 101, 111, 121, 131, 141,
+      151, 161, 171, 181, 191, 202, 212, 222,
+      232, 242, 252, 262, 272, 282, 292, 303,
+      313, 323, 333, 343, 353, 363, 373, 383,
+      393, 404, 414, 424, 434, 444, 454, 464,
+      474, 484, 494, 505, 515,
+    ];
+    let s = TatyamSet::from_iter(l.iter().copied());
+    assert!(s.contains(&202));
+    assert!(s.contains(&212));
+    assert!(s.contains(&222));
+    for i in 200..=225 {
+      if i == 202 || i == 212 || i == 222 {
+        continue;
+      } else {
+        assert!(!s.contains(&i));
+      }
+    }
+    assert!(s.contains(&505));
+    assert!(s.contains(&515));
+    for i in 500..=520 {
+      if i == 505 || i == 515 {
+        continue;
+      } else {
+        assert!(!s.contains(&i));
+      }
+    }
   }
 
   #[test]
@@ -83,10 +114,15 @@ mod tests {
     let s = TatyamSet::from_iter([2, 4, 5, 8, 13, 17, 21].iter().copied());
     assert_eq!(s.le(&8), Some(&8));
     assert_eq!(s.le(&7), Some(&5));
+    assert_eq!(s.le(&1), None);
     assert_eq!(s.lt(&8), Some(&5));
+    assert_eq!(s.lt(&2), None);
     assert_eq!(s.ge(&13), Some(&13));
     assert_eq!(s.ge(&14), Some(&17));
+    assert_eq!(s.ge(&22), None);
+    assert_eq!(s.gt(&99), None);
     assert_eq!(s.gt(&13), Some(&17));
+    assert_eq!(s.gt(&21), None);
   }
 
 }
