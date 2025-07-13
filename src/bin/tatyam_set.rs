@@ -123,6 +123,12 @@ mod tests {
     assert_eq!(s.gt(&99), None);
     assert_eq!(s.gt(&13), Some(&17));
     assert_eq!(s.gt(&21), None);
+
+    let s = TatyamSet::new();
+    assert_eq!(s.le(&8), None);
+    assert_eq!(s.lt(&8), None);
+    assert_eq!(s.ge(&8), None);
+    assert_eq!(s.gt(&8), None);
   }
 
   #[test]
@@ -182,7 +188,7 @@ pub mod tatyam_set {
 
   impl<T: Ord + Clone> TatyamSet<T> {
     pub fn new() -> Self {
-      TatyamSet { a: vec![vec![]], len: 0 }
+      TatyamSet { a: vec![], len: 0 }
     }
     pub fn from_iter<I: Iterator<Item = T>>(iter: I) -> Self {
       let mut ls = iter.collect::<Vec<_>>();
@@ -220,7 +226,7 @@ pub mod tatyam_set {
     }
     pub fn insert(&mut self, x: T) -> bool {
       if self.is_empty() {
-        self.a[0].push(x);
+        self.a = vec![vec![x]];
         self.len += 1;
         return true;
       }
