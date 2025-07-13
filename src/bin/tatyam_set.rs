@@ -138,7 +138,7 @@ pub mod tatyam_set {
         return false;
       }
       let (i, j) = self.position(x);
-      i != self.a[i].len() && &self.a[i][j] == x
+      j != self.a[i].len() && &self.a[i][j] == x
     }
     pub fn insert(&mut self, x: T) -> bool {
       if self.is_empty() {
@@ -148,7 +148,7 @@ pub mod tatyam_set {
       }
       let (i, j) = self.position(&x);
       let b = &mut self.a[i];
-      if i != b.len() && &b[j] == &x {
+      if j != b.len() && &b[j] == &x {
         return false;
       }
       b.insert(j, x);
@@ -180,7 +180,7 @@ pub mod tatyam_set {
     }
     pub fn lt(&self, x: &T) -> Option<&T> {
       if let Some(i) = self.a.iter().rev().position(|b| b.first().unwrap() < x) {
-        let j = self.a[self.a.len()-i].partition_point(|y| y < x);
+        let j = self.a[self.a.len()-i-1].partition_point(|y| y < x);
         Some(&self.a[i][j-1])
       } else {
         None
@@ -188,7 +188,7 @@ pub mod tatyam_set {
     }
     pub fn le(&self, x: &T) -> Option<&T> {
       if let Some(i) = self.a.iter().rev().position(|b| b.first().unwrap() <= x) {
-        let j = self.a[self.a.len()-i].partition_point(|y| y <= x);
+        let j = self.a[self.a.len()-i-1].partition_point(|y| y <= x);
         Some(&self.a[i][j-1])
       } else {
         None
