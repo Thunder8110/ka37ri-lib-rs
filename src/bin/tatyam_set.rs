@@ -186,8 +186,8 @@ pub mod tatyam_set {
 
   // rewrote https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py in Rust
   
-  const BUCKET_RATIO: usize = 700;
-  const SPLIT_RATIO: usize = 1050;
+  const BUCKET_RATIO: usize = 10000;
+  const SPLIT_RATIO: usize = 15000;
 
   #[derive(Debug, Eq)]
   pub struct TatyamSet<T: Ord + Clone> {
