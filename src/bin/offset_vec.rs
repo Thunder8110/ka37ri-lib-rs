@@ -11,19 +11,19 @@ mod tests {
   }
 }
 
-#[snippet("negv")]
-pub mod neg_vec {
+#[snippet("ofsv")]
+pub mod offset_vec {
   use std::ops::{Index, IndexMut};
 
   #[derive(Debug, Clone, PartialEq, Eq)]
-  pub struct NegVec<V> {
+  pub struct OffsetVec<V> {
     vec_pos: Vec<V>,
     vec_neg: Vec<V>,
   }
 
-  impl<V> NegVec<V> {
+  impl<V> OffsetVec<V> {
     pub fn new() -> Self {
-      NegVec {
+      OffsetVec {
         vec_pos: vec![],
         vec_neg: vec![],
       }
@@ -59,16 +59,16 @@ pub mod neg_vec {
     }
   }
 
-  impl<V: Clone> NegVec<V> {
+  impl<V: Clone> OffsetVec<V> {
     pub fn new_init(len_pos: usize, len_neg: usize, init: V) -> Self {
-      NegVec {
+      OffsetVec {
         vec_pos: vec![init.clone(); len_pos],
         vec_neg: vec![init.clone(); len_neg],
       }
     }
   }
 
-  impl<V> Index<isize> for NegVec<V> {
+  impl<V> Index<isize> for OffsetVec<V> {
     type Output = V;
     fn index(&self, i: isize) -> &Self::Output {
       if i >= 0 {
@@ -79,7 +79,7 @@ pub mod neg_vec {
     }
   }
 
-  impl<V> IndexMut<isize> for NegVec<V> {
+  impl<V> IndexMut<isize> for OffsetVec<V> {
     fn index_mut(&mut self, i: isize) -> &mut Self::Output {
       if i >= 0 {
         &mut self.vec_pos[i as usize]
