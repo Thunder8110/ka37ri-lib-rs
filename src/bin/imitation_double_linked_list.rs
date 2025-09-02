@@ -137,6 +137,12 @@ pub mod imitation_double_linked_list {
     pub fn len(&self) -> usize {
       self.len
     }
+    pub fn is_empty(&self) -> bool {
+      self.len == 0
+    }
+    pub fn index_map(&self) -> &HashMap<T, usize> {
+      &self.map
+    }
     pub fn iter(&self) -> ImitationDoubleLinkedListIter<T> {
       ImitationDoubleLinkedListIter {
         list: self,
