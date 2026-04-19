@@ -1,14 +1,14 @@
 #[cfg(test)]
 mod tests {
+  use crate::query_macros::queries;
   use proconio::input;
-  use crate::macros::queries;
 
   queries!(
     1 => Add(x: usize, y: u32),
     2 => Remove(x: usize),
     3 => Query(),
   );
-  
+
   #[test]
   #[ignore]
   fn test_queries() {
@@ -42,10 +42,9 @@ mod tests {
   }
 }
 
-mod macros {
+mod query_macros {
   use cargo_snippet::snippet;
-  
-  
+
   #[snippet("queries")]
   #[macro_export]
   macro_rules! queries {
@@ -87,6 +86,27 @@ mod macros {
   }
 
   pub(crate) use queries;
+}
+
+mod debug_macros {
+  use cargo_snippet::snippet;
+
+  #[snippet("dep")]
+  #[macro_export]
+  macro_rules! dbg_eprintln {
+    ($($arg:tt)*) => {
+      #[cfg(debug_assertions)]
+      eprintln!($($arg)*);
+    }
+  }
+
+  #[snippet("dvi")]
+  #[macro_export]
+  macro_rules! dbg_view {
+    ($($val:expr),*) => {
+      &format!(concat!($(stringify!($val), ": {:?} | "),*,), $(&$val),*)
+    };
+  }
 }
 
 fn main() {
