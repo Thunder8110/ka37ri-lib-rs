@@ -182,13 +182,15 @@ mod tests {
 }
 
 pub mod tatyam_set {
-  use std::ops::Index;
-
-  // rewrote https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py in Rust
+  //! rewrote https://github.com/tatyam-prime/SortedSet/blob/main/SortedSet.py in Rust
   
-  const BUCKET_RATIO: usize = 10000;
-  const SPLIT_RATIO: usize = 15000;
-
+  use std::ops::Index;
+  
+  /// Library checker(5e5) -> 10000, AtCoder(2e5) -> 800
+  const BUCKET_RATIO: usize = 800;
+  /// Library checker(5e5) -> 15000, AtCoder(2e5) -> 1200
+  const SPLIT_RATIO: usize = 1200;
+  
   #[derive(Debug, Eq)]
   pub struct TatyamSet<T: Ord + Clone> {
     a: Vec<Vec<T>>,
