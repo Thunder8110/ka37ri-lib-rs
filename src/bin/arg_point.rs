@@ -8,6 +8,16 @@ fn main() {
 pub mod arg_point {
   //! Sort points by their argument (angle) from the origin. [0 degrees, 360 degrees)
   //! Points at the origin are considered incomparable.
+  //! # Example
+  //! ```
+  //! use crate::arg_point::ArgPoint;
+  //! let deg0 = ArgPoint::from((1, 0));
+  //! let deg45 = ArgPoint::from((1, 1));
+  //! let deg90 = ArgPoint::from((0, 1));
+  //! assert_eq!(deg0.partial_cmp(&deg45), std::cmp::Ordering::Less);
+  //! assert_eq!(deg90.partial_cmp(&deg45), std::cmp::Ordering::Greater);
+  //! assert_eq!(deg0.partial_cmp(&deg0), std::cmp::Ordering::Equal);
+  //! ```
   use std::{cmp::Ordering, fmt::Debug};
   #[derive(Clone, Copy, Eq, Ord)]
   pub struct ArgPoint {
