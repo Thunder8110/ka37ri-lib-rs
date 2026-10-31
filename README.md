@@ -7,3 +7,6 @@ This is a collection of functions and data suructures for Rust.
 
 - `./snippet.sh`: Generates `snippet_generated.json`.
 - `./snippet.sh update`: Generates `snippet_generated.json` and replace VSCode snippet file.
+
+# License
+This library is licensed under the MIT License(https://opensource.org/licenses/MIT).
